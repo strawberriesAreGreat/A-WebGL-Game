@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="js/main.js"></script>
+    <script src="js/Bacteria.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/shader.js"></script>
+    <script src="js/collisionDetect.js"></script>
+
+  <style>
+    * {margin:0; padding:0;background: pink;}
+    body {overflow:hidden;}
+    canvas{background: black;}
+  </style>
+
+  <script>
+    window.addEventListener("load",function(){
+
+      window.game = new Game();
+      //the listener will sit in the main function so it isn't spammed
+      main(window.game);
+      loop();
+
+    });
+  </script>
+  <!-- First Set of Shaders for rendering the game images-->
+      <!-- vertext shader  -->
+      <script type="vertext_shader" id="vs">
+      precision mediump float;
+
+      attribute vec4 vPosition;
+      attribute vec4 vColor;
+      varying vec4 fColor;
+
+      void main()
+      {
+        gl_Position = vPosition;
+        fColor = vColor;
+      }
+      </script>
+      <!-- fragment shader  -->
+      <script type="fragment_shader" id="fs">
+      precision mediump float;
+
+      varying vec4 fColor;
+
+      void main()
+      {
+          gl_FragColor = fColor;
+      }
+      </script>
+  <!-- Second Set of shaders used for rendering the picker shapes-->
+    <!-- picker vertex shader -->
+    <script id="pickerVShader" type="vertext_shader">
+
+      attribute vec4 a_position;
+      uniform mat4 u_matrix;
+
+      void main() {
+        // Multiply the position by the matrix.
+        gl_Position = u_matrix * a_position;
+      }
+
+    </script>
+    <!-- picker fragment shader -->
+    <script id="pickerFShader" type="fragment_shader">
+      precision mediump float;
+
+      uniform vec4 u_id;
+
+      void main() {
+         gl_FragColor = u_id;
+      }
+    </script>
+  </head>
+  <body>
+    <p id="score1"> Score </p>
+    <p id="score2"> 0/0</p>
+  </body>
+</html>
