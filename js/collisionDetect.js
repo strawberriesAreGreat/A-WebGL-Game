@@ -1,6 +1,6 @@
+//loop through all combinations of bacteria to check each and everyone of them against each other
+//not scalable but for the purposes of this simple game it will suffice
 function isOverlapping(bacteria) {
-  //loop through all combinations of bacteria to check each and everyone of them against each other
-  //not scalable but for the purposes of this simple game it will suffice
   for (var i = 0; i < bacteria.length - 1; i++) {
     for (var j = bacteria.length - 1; j > i; j--) {
       if (calculateDistance(bacteria[i], bacteria[j])) {
@@ -18,12 +18,12 @@ function isOverlapping(bacteria) {
     }
   }
 }
-function isPoisoning(antiBacteria, bacteria) {
-  //loop through all combinations of bacteria to check each and everyone of them against each other
-  //not scalable but for the purposes of this simple game it will suffice
-  for (var i = 0; i < antiBacteria.length; i++) {
+//loop through all combinations of bacteria to check each and everyone of them against each other
+//not scalable but for the purposes of this simple game it will suffice
+function isPoisoning(antibiotics, bacteria) {
+  for (var i = 0; i < antibiotics.length; i++) {
     for (var j = 0; j < bacteria.length; j++) {
-      if (calculateDistance(antiBacteria[i], bacteria[j])) {
+      if (calculateDistance(antibiotics[i], bacteria[j])) {
         //deleting bacteria if and when it hits antibacteria
         game.deleteBacteria(j)
         document.getElementById('score2').innerHTML = writeScore()

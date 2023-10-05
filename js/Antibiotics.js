@@ -1,5 +1,5 @@
 //eachg bacteria is a bacteria object that contains its unique color and unique rate of growth
-class AntiBacteria extends Bacteria {
+class Antibiotics extends Bacteria {
   bacteriaList = [
     // [ r, g, b,s tartngSize, startingSpeedOfGrowth]
     [190, 230, 206, 0.01, this.defineRateOfGrowth()],

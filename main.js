@@ -27,7 +27,7 @@ function main() {
       if (pixels[0] != 255 && pixels[0] != 0) {
         game.updateBacteria(pixels)
       }
-      game.updateAntiBacteria(x, y)
+      game.updateAntibiotics(x, y)
     })
   })
 }
@@ -35,7 +35,7 @@ function main() {
 //updates the game as frames are updated
 function loop() {
   isOverlapping(game.getBacteria())
-  isPoisoning(game.getAntiBacteria(), game.getBacteria())
+  isPoisoning(game.getAntibiotics(), game.getBacteria())
   window.game.update()
   if (game.isOver()) {
     alert('GAME OVER, YOUR SCORE:')

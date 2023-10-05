@@ -2,15 +2,21 @@
 class Game {
   constructor() {
     const width = 800,
-      heigth = 800
+      heigth = 800,
+      bacteriaCount = Math.floor(Math.random() * 5 + 5),
+      backgoundColour = [1, 1, 1, 1] // white
 
-    this.background = [1, 1, 1, 1]
-
-    //initializing the game state
+    this.background = backgoundColour
     this.score = 0
     this.bacteria = []
-    this.antiBacteria = []
+    this.antibiotics = []
 
+    //initialization
+    this.initializeCanvas()
+    this.initializeBacteria(bacteriaCount)
+  }
+
+  initializeCanvas() {
     //create a canvas element so we dont have to refresh the entire DOM
     this.gameCanvas = document.createElement('canvas')
     this.gameCanvas.setAttribute('id', 'canvas')
@@ -30,50 +36,58 @@ class Game {
     //grabing our vertex and fragment shaders from the DOM and initializing them
     this.program = shaderSetUp(this.gl)
     this.gl.useProgram(this.program)
-
-    //initializing the bacteria
-    var bn = Math.floor(Math.random() * 5 + 5)
-    this.bacteria = Array(bn)
-    this.points = bn
-    for (var i = 0; i < bn; i++) {
+  }
+  initializeBacteria(bacteriaCount) {
+    this.bacteria = Array(bacteriaCount) // max number of bacteria is 10
+    for (var i = 0; i < bacteriaCount; i++) {
       this.bacteria[i] = new Bacteria()
     }
   }
+
+  clearFrame() {
+    //Setting the colour of the background
+    this.gl.clearColor(
+      this.background[0],
+      this.background[1],
+      this.background[2],
+      this.background[3],
+    )
+    //creating our viewport
+    this.gl.viewport(0, 0, this.gameCanvas.width, this.gameCanvas.height)
+    //clearing previous rendering
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT)
+    //enabling the next rendering and defining how to blend it
+    this.gl.enable(this.gl.BLEND)
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
+    //clearing for the next frame in the loop
+    this.gl.flush()
+  }
+
+  setGameStatus() {
+    let i = 0
+    while (i < this.bacteria.length) {
+      if (this.bacteria[i].size > 0.3) this.over = true
+      i++
+    }
+  }
+
   //the game state when running
   update() {
     if (!this.over) {
-      //Setting the colour of the background
-      this.gl.clearColor(
-        this.background[0],
-        this.background[1],
-        this.background[2],
-        this.background[3],
-      )
-      //creating our viewport
-      this.gl.viewport(0, 0, this.gameCanvas.width, this.gameCanvas.height)
-      //clearing previous rendering
-      this.gl.clear(this.gl.COLOR_BUFFER_BIT)
-      //enabling the next rendering and defining how to blend it
-      this.gl.enable(this.gl.BLEND)
-      this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
-      //clearing for the next frame in the loop
-      this.gl.flush()
-      //drawing the circle dish with each frame
+      this.clearFrame()
+
+      // Draw the objects
       drawDish(this.gl, this.program)
-      //drawing the random bacteria circles
-      if (
-        !drawBacteriaAndAntiBacteria(
-          this.gl,
-          this.program,
-          this.bacteria,
-          this.antiBacteria,
-        )
-      ) {
-        this.over = true
-      }
+      drawBacteria(this.gl, this.program, this.antibiotics)
+      drawBacteria(this.gl, this.program, this.bacteria)
+      // Determine if the game is over
+      this.setGameStatus()
     }
   }
-  setBacteria() {}
+
+  setBacteria() {
+    bacteria.push(new Bacteria())
+  }
   deleteBacteria(index) {
     if (index > -1) {
       this.bacteria.splice(index, 1)
@@ -86,8 +100,8 @@ class Game {
   getBacteria() {
     return this.bacteria
   }
-  getAntiBacteria() {
-    return this.antiBacteria
+  getAntibiotics() {
+    return this.antibiotics
   }
   getScore() {
     return this.score
@@ -117,12 +131,12 @@ class Game {
       }
     }
   }
-  updateAntiBacteria(x, y) {
+  updateAntibiotics(x, y) {
     //after any bacteria groups that have been clicked on are deleted
     //we delete produce an antibiotic
-    let b = new AntiBacteria()
+    let b = new Antibiotics()
     b.setOrginX(x)
     b.setOrginY(y)
-    this.antiBacteria.push(b)
+    this.antibiotics.push(b)
   }
 }
