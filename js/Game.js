@@ -1,14 +1,16 @@
 // initializing the game object
 class Game {
   constructor() {
-    //initializing the game data
-    this.win = false
-    this.lose = false
-    this.points = 0
+    const width = 800,
+      heigth = 800
+
+    this.background = [1, 1, 1, 1]
+
+    //initializing the game state
     this.score = 0
     this.bacteria = []
     this.antiBacteria = []
-    this.red = 0
+
     //create a canvas element so we dont have to refresh the entire DOM
     this.gameCanvas = document.createElement('canvas')
     this.gameCanvas.setAttribute('id', 'canvas')
@@ -28,8 +30,7 @@ class Game {
     //grabing our vertex and fragment shaders from the DOM and initializing them
     this.program = shaderSetUp(this.gl)
     this.gl.useProgram(this.program)
-    //initializing the bacteria circles starting locations, speeds of growth, and number of Bacteria
-    //number of bacteria (between 5-10)
+    //initializing the bacteria
     var bn = Math.floor(Math.random() * 5 + 5)
     this.bacteria = Array(bn)
     this.points = bn
@@ -39,9 +40,14 @@ class Game {
   }
   //the game state when running
   update() {
-    if (!this.lose) {
+    if (!this.over) {
       //Setting the colour of the background
-      this.gl.clearColor(0, 0, 0, 1.0)
+      this.gl.clearColor(
+        this.background[0],
+        this.background[1],
+        this.background[2],
+        this.background[3],
+      )
       //creating our viewport
       this.gl.viewport(0, 0, this.gameCanvas.width, this.gameCanvas.height)
       //clearing previous rendering
@@ -55,7 +61,7 @@ class Game {
       this.drawDish()
       //drawing the random bacteria circles
       if (!this.drawBacteria()) {
-        this.lose = true
+        this.over = true
       }
     }
   }
@@ -65,14 +71,9 @@ class Game {
       this.bacteria.splice(index, 1)
     }
     this.score += 1
-
-    //checking to see if the player has killed all the bacteria
-    if (this.points == this.score) {
-      this.win = true
-    }
   }
-  hasLost() {
-    return this.lose
+  isOver() {
+    return this.over
   }
   getBacteria() {
     return this.bacteria
@@ -82,12 +83,6 @@ class Game {
   }
   getScore() {
     return this.score
-  }
-  getPoints() {
-    return this.points
-  }
-  hasWon() {
-    return this.win
   }
 
   updateBacteria(pixels) {
@@ -117,8 +112,7 @@ class Game {
   updateAntiBacteria(x, y) {
     //after any bacteria groups that have been clicked on are deleted
     //we delete produce an antibiotic
-    let b = new Bacteria()
-    b.setAsAnti()
+    let b = new AntiBacteria()
     b.setOrginX(x)
     b.setOrginY(y)
     this.antiBacteria.push(b)
@@ -156,9 +150,6 @@ class Game {
         this.antiBacteria[i].getB(),
       )
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
-      //if (this.bacteria[i].getSize() > 0.30) {
-      //  this.bacteria[i].setRate(0);
-      //};
     }
     return c
   }
@@ -166,6 +157,11 @@ class Game {
   drawDish() {
     var circleOrgin = [0, 0]
     var scale = 0.7
+    var n = this.initBuffers(circleOrgin, scale, 0, 0, 0)
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
+
+    var circleOrgin = [0, 0]
+    var scale = 0.69
     var n = this.initBuffers(circleOrgin, scale, 1, 1, 1)
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
   }

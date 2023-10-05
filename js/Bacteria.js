@@ -1,25 +1,36 @@
 //eachg bacteria is a bacteria object that contains its unique color and unique rate of growth
 class Bacteria {
+  bacteriaList = [
+    // [ r, g, b,s tartngSize, startingSpeedOfGrowth]
+    [250, 188, 60, 0.01, this.defineRateOfGrowth()],
+    [255, 178, 56, 0.03, this.defineRateOfGrowth()],
+    [241, 145, 67, 0.04, this.defineRateOfGrowth()],
+    [255, 119, 61, 0.05, this.defineRateOfGrowth()],
+    [245, 85, 54, 0.06, this.defineRateOfGrowth()],
+  ]
   constructor() {
-    //is antibacteria
-    this.anti = false
-    //bactria RGB values
-    this.r = Math.random()
-    this.g = Math.random()
-    this.b = Math.random()
-    //starting size is anywhere between 2-5% of the canvas size
-    this.size = 0.01
-    //bacteria rate of growth between 0.1-3x speed
-    this.rate = 0.2 * Math.floor(Math.random() + 1)
-    //Starting location of the bacteria
-    var j = (Math.floor(Math.random() * 360) * Math.PI) / 180
-    this.v2 = [0.7 * Math.sin(j), 0.7 * Math.cos(j)]
+    // Setting bacteria properties
+    var selectedBacteria =
+      this.bacteriaList[Math.floor(Math.random() * this.bacteriaList.length)]
+
+    this.r = selectedBacteria[0] / 255
+    this.g = selectedBacteria[1] / 255
+    this.b = selectedBacteria[2] / 255
+    this.size = selectedBacteria[3]
+    this.rate = selectedBacteria[4]
+    this.v2 = this.defineStartingLocation()
   }
 
-  //getters
-  getAntiStatus() {
-    return this.anti
+  // Defining the rate of growth for a given bacteria colony
+  defineRateOfGrowth() {
+    return 0.1 * Math.floor(Math.random() + 1)
   }
+  // Defining the radial starting location for a bacteria colony
+  defineStartingLocation() {
+    const postition = (Math.floor(Math.random() * 360) * Math.PI) / 180
+    return [0.7 * Math.sin(postition), 0.7 * Math.cos(postition)]
+  }
+  //getters
   getR() {
     return this.r
   }
@@ -65,12 +76,7 @@ class Bacteria {
   setOrginY(y) {
     this.v2[1] = (y - 400) / 400
   }
-  setAsAnti() {
-    this.anti = true
-    this.r = 1
-    this.g = 0
-    this.b = 0
-  }
+
   setRate(x) {
     this.rate = x
   }

@@ -37,12 +37,8 @@ function loop() {
   isOverlapping(game.getBacteria())
   isPoisoning(game.getAntiBacteria(), game.getBacteria())
   window.game.update()
-  if (game.hasWon()) {
-    document.getElementById('score1').innerHTML = 'YOU WIN!'
-    return
-  }
-  if (game.hasLost()) {
-    alert('GAME OVER, YOU LOSE!')
+  if (game.isOver()) {
+    alert('GAME OVER, YOUR SCORE:')
     document.getElementById('score1').innerHTML = 'YOU LOSE!'
     return
   }
@@ -50,7 +46,7 @@ function loop() {
 }
 
 function writeScore() {
-  return game.getScore() + '/' + game.getPoints()
+  return game.getScore()
 }
 
 function areSameColor(r1, g1, b1, r2, g2, b2) {
