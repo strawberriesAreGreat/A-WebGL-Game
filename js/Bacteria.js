@@ -3,9 +3,9 @@ class Bacteria {
   bacteriaList = [
     // [ r, g, b,s tartngSize, startingSpeedOfGrowth]
     [250, 188, 60, 0.01, this.defineRateOfGrowth()],
-    [255, 178, 56, 0.03, this.defineRateOfGrowth()],
+    [254, 178, 56, 0.03, this.defineRateOfGrowth()],
     [241, 145, 67, 0.04, this.defineRateOfGrowth()],
-    [255, 119, 61, 0.05, this.defineRateOfGrowth()],
+    [254, 119, 61, 0.05, this.defineRateOfGrowth()],
     [245, 85, 54, 0.06, this.defineRateOfGrowth()],
   ]
   constructor() {

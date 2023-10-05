@@ -1,35 +1,10 @@
 var game
 
 function main() {
+  game = new Game()
   game = window.game
-
-  //checking if we've selected a bacteria to kill
-  var canvas = document.querySelector('canvas')
-  var gl = canvas.getContext('webgl')
-  var pixels = new Uint8Array(4)
-
-  //tracking where the last click took place
-  var elem = document.getElementById('canvas'),
-    eLeft = elem.offsetLeft + elem.clientLeft,
-    eTop = elem.offsetTop + elem.clientTop,
-    c = elem.getContext('2d'),
-    elements = []
-
-  canvas.addEventListener('click', function (event) {
-    var x = event.clientX - eLeft
-    var y = 800 - (event.clientY - eTop)
-
-    //now we need to request animation frame because the canvas is in a constant state of flux as it renders
-    requestAnimationFrame(function () {
-      //finally getting the pixel values of the spot clicked
-      gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
-      //checking if the bacteria has been clicked on (any pixel with an R value != 0 or 255 (black or white))
-      if (pixels[0] != 255 && pixels[0] != 0) {
-        game.updateBacteria(pixels)
-      }
-      game.updateAntibiotics(x, y)
-    })
-  })
+  mouseWatch()
+  loop()
 }
 
 //updates the game as frames are updated
@@ -38,8 +13,8 @@ function loop() {
   isPoisoning(game.getAntibiotics(), game.getBacteria())
   window.game.update()
   if (game.isOver()) {
-    alert('GAME OVER, YOUR SCORE:')
-    document.getElementById('score1').innerHTML = 'YOU LOSE!'
+    alert('GAME OVER')
+    document.getElementById('score2').innerHTML = 'YOU LOSE!'
     return
   }
   requestAnimationFrame(loop)
@@ -49,15 +24,30 @@ function writeScore() {
   return game.getScore()
 }
 
-function areSameColor(r1, g1, b1, r2, g2, b2) {
-  let dR = Math.abs(r1 - r2)
-  let dG = Math.abs(g1 - g2)
-  let dB = Math.abs(b1 - b2)
-  let diff = dR + dG + dB
+// Watching Mouse Clicks
+function mouseWatch() {
+  var canvas = document.querySelector('canvas')
+  var gl = canvas.getContext('webgl')
+  var pixels = new Uint8Array(4)
 
-  if (diff < 4) {
-    return true
-  } else {
-    return false
-  }
+  //tracking where the last click took place
+  var element = document.getElementById('canvas'),
+    xOffset = element.offsetLeft + element.clientLeft,
+    yOffset = element.offsetTop + element.clientTop,
+    c = element.getContext('2d'),
+    elements = []
+
+  canvas.addEventListener('click', function (event) {
+    var x = event.clientX - xOffset
+    var y = 800 - (event.clientY - yOffset)
+
+    requestAnimationFrame(function () {
+      gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
+
+      if (pixels[0] != 255 && pixels[0] != 0) {
+        game.updateBacteria(pixels)
+        game.updateAntibiotics(x, y)
+      }
+    })
+  })
 }

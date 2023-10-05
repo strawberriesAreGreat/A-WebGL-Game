@@ -52,3 +52,16 @@ function calculateDistance(particleA, particleB) {
   // if the combine radius > distance between orgins we know they overlap so we return true
   return combinedRadiuses >= orginDistance
 }
+
+function areSameColor(r1, g1, b1, r2, g2, b2) {
+  let dR = Math.abs(r1 - r2)
+  let dG = Math.abs(g1 - g2)
+  let dB = Math.abs(b1 - b2)
+  let diff = dR + dG + dB
+
+  if (diff < 4) {
+    return true
+  } else {
+    return false
+  }
+}
