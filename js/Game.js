@@ -58,7 +58,7 @@ class Game {
       //clearing for the next frame in the loop
       this.gl.flush()
       //drawing the circle dish with each frame
-      this.drawDish()
+      drawDish(this.gl, this.program)
       //drawing the random bacteria circles
       if (!this.drawBacteria()) {
         this.over = true
@@ -156,17 +156,5 @@ class Game {
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
     }
     return c
-  }
-  //drawing the big circle in the middle
-  drawDish() {
-    var circleOrgin = [0, 0]
-    var scale = 0.7
-    var n = initBuffers(this.gl, this.program, circleOrgin, scale, 0, 0, 0)
-    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
-
-    var circleOrgin = [0, 0]
-    var scale = 0.69
-    var n = initBuffers(this.gl, this.program, circleOrgin, scale, 1, 1, 1)
-    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
   }
 }
