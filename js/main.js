@@ -18,7 +18,6 @@ function main() {
   canvas.addEventListener('click', function (event) {
     var x = event.clientX - eLeft
     var y = 800 - (event.clientY - eTop)
-    console.log(event.clientX + ' ' + event.clientY)
 
     //now we need to request animation frame because the canvas is in a constant state of flux as it renders
     requestAnimationFrame(function () {

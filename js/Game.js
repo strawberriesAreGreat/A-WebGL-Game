@@ -101,7 +101,6 @@ class Game {
 
         if (areSameColor(pixels[0], pixels[1], pixels[2], r, g, b)) {
           game.deleteBacteria(i)
-          console.log('Bacteria deleted!')
           document.getElementById('score2').innerHTML = writeScore()
           break
         }
@@ -141,13 +140,11 @@ class Game {
         this.bacteria[i].getB(),
       )
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
-      //console.log(this.bacteria[i].getSize());
       //if any of bacteria reaches the edge of the canvas the game is over and the player loses
       if (this.bacteria[i].size > 0.3) {
         c = false
       }
     }
-    // pogggggers
     for (var i = 0; i < this.antiBacteria.length; i++) {
       this.antiBacteria[i].growth()
       var circleOrgin = this.antiBacteria[i].getV2()

@@ -45,9 +45,6 @@ function shaderSetUp(gl) {
     alert('Shader program failed to link.')
     return 0
   }
-  console.log('Program made')
-  console.log(webglProgram)
-  console.log(gl)
 
   return webglProgram
 }

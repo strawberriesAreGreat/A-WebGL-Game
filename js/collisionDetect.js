@@ -25,7 +25,6 @@ function isPoisoning(antiBacteria, bacteria) {
     for (var j = 0; j < bacteria.length; j++) {
       if (calculateDistance(antiBacteria[i], bacteria[j])) {
         //deleting bacteria if and when it hits antibacteria
-        console.log(' Antibiotic has killed a bacteria colony ')
         game.deleteBacteria(j)
         document.getElementById('score2').innerHTML = writeScore()
       }
