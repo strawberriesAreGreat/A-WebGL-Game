@@ -126,7 +126,9 @@ class Game {
       this.bacteria[i].growth()
       //drawing the orgin of the circle the perimeter
       var circleOrgin = this.bacteria[i].getV2()
-      var n = this.initBuffers(
+      var n = initBuffers(
+        this.gl,
+        this.program,
         circleOrgin,
         this.bacteria[i].size,
         this.bacteria[i].getR(),
@@ -142,7 +144,9 @@ class Game {
     for (var i = 0; i < this.antiBacteria.length; i++) {
       this.antiBacteria[i].growth()
       var circleOrgin = this.antiBacteria[i].getV2()
-      var n = this.initBuffers(
+      var n = initBuffers(
+        this.gl,
+        this.program,
         circleOrgin,
         this.antiBacteria[i].size,
         this.antiBacteria[i].getR(),
@@ -157,61 +161,12 @@ class Game {
   drawDish() {
     var circleOrgin = [0, 0]
     var scale = 0.7
-    var n = this.initBuffers(circleOrgin, scale, 0, 0, 0)
+    var n = initBuffers(this.gl, this.program, circleOrgin, scale, 0, 0, 0)
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
 
     var circleOrgin = [0, 0]
     var scale = 0.69
-    var n = this.initBuffers(circleOrgin, scale, 1, 1, 1)
+    var n = initBuffers(this.gl, this.program, circleOrgin, scale, 1, 1, 1)
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
-  }
-
-  initBuffers(orgin, scale, r, g, b) {
-    var vertices = []
-    //Assinging color and XY(no need for Z when working on a 2d game)values
-    for (var i = 0; i <= 360; i += 1) {
-      // degs ==> rads
-      var j = (i * Math.PI) / 180
-      //only 70% of the of the canvas size
-      var v1 = [orgin[0] + scale * Math.sin(j), orgin[1] + scale * Math.cos(j)]
-      var v2 = orgin
-
-      vertices = vertices.concat(v1)
-      vertices = vertices.concat(v2)
-    }
-    var n = vertices.length / 2
-    //the array that will story the colours for the vertices
-    var colors = []
-    for (var i = 0; i < n; i++) {
-      colors = colors.concat(r, g, b, 1.0)
-    }
-
-    //position buffer
-    var vBuffer = this.gl.createBuffer()
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vBuffer)
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      new Float32Array(vertices),
-      this.gl.STATIC_DRAW,
-    ) //sending from the CPU -> gpu memory once
-
-    var vPosition = this.gl.getAttribLocation(this.program, 'vPosition')
-    this.gl.vertexAttribPointer(vPosition, 2, this.gl.FLOAT, false, 0, 0)
-    this.gl.enableVertexAttribArray(vPosition)
-
-    //the colour buffer for the circles
-    var cBuffer = this.gl.createBuffer()
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, cBuffer)
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      new Float32Array(colors),
-      this.gl.STATIC_DRAW,
-    )
-
-    var color = this.gl.getAttribLocation(this.program, 'vColor')
-    this.gl.vertexAttribPointer(color, 4, this.gl.FLOAT, false, 0, 0)
-    this.gl.enableVertexAttribArray(color)
-
-    return n
   }
 }
