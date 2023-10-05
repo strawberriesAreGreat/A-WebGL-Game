@@ -30,6 +30,7 @@ class Game {
     //grabing our vertex and fragment shaders from the DOM and initializing them
     this.program = shaderSetUp(this.gl)
     this.gl.useProgram(this.program)
+
     //initializing the bacteria
     var bn = Math.floor(Math.random() * 5 + 5)
     this.bacteria = Array(bn)
@@ -60,7 +61,14 @@ class Game {
       //drawing the circle dish with each frame
       drawDish(this.gl, this.program)
       //drawing the random bacteria circles
-      if (!this.drawBacteria()) {
+      if (
+        !drawBacteriaAndAntiBacteria(
+          this.gl,
+          this.program,
+          this.bacteria,
+          this.antiBacteria,
+        )
+      ) {
         this.over = true
       }
     }
@@ -116,45 +124,5 @@ class Game {
     b.setOrginX(x)
     b.setOrginY(y)
     this.antiBacteria.push(b)
-  }
-  //drawing all the bacteria circles
-  drawBacteria() {
-    //end game state
-    var c = true
-    //bacteria.length instead of 1
-    for (var i = 0; i < this.bacteria.length; i++) {
-      this.bacteria[i].growth()
-      //drawing the orgin of the circle the perimeter
-      var circleOrgin = this.bacteria[i].getV2()
-      var n = initBuffers(
-        this.gl,
-        this.program,
-        circleOrgin,
-        this.bacteria[i].size,
-        this.bacteria[i].getR(),
-        this.bacteria[i].getG(),
-        this.bacteria[i].getB(),
-      )
-      this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
-      //if any of bacteria reaches the edge of the canvas the game is over and the player loses
-      if (this.bacteria[i].size > 0.3) {
-        c = false
-      }
-    }
-    for (var i = 0; i < this.antiBacteria.length; i++) {
-      this.antiBacteria[i].growth()
-      var circleOrgin = this.antiBacteria[i].getV2()
-      var n = initBuffers(
-        this.gl,
-        this.program,
-        circleOrgin,
-        this.antiBacteria[i].size,
-        this.antiBacteria[i].getR(),
-        this.antiBacteria[i].getG(),
-        this.antiBacteria[i].getB(),
-      )
-      this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, n)
-    }
-    return c
   }
 }
