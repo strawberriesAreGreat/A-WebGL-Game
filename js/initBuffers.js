@@ -1,12 +1,15 @@
-function initBuffers(gl, program, orgin, scale, r, g, b) {
+function initBuffers(gl, program, compression, orgin, scale, r, g, b) {
   var vertices = []
   //Assinging color and XY(no need for Z when working on a 2d game)values
   for (var i = 0; i <= 360; i += 1) {
     // degs ==> rads
     var j = (i * Math.PI) / 180
-    //only 70% of the of the canvas size
-    var v1 = [orgin[0] + scale * Math.sin(j), orgin[1] + scale * Math.cos(j)]
-    var v2 = orgin
+
+    var v1 = [
+      (orgin[0] + scale * Math.sin(j)) * compression[0],
+      (orgin[1] + scale * Math.cos(j)) * compression[1],
+    ]
+    var v2 = [orgin[0] * compression[0], orgin[1] * compression[1]]
 
     vertices = vertices.concat(v1)
     vertices = vertices.concat(v2)

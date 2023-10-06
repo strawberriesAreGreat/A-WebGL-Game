@@ -1,4 +1,4 @@
-function drawBacteria(gl, program, bacteria) {
+function drawBacteria(gl, program, compression, bacteria) {
   //bacteria.length instead of 1
   for (var i = 0; i < bacteria.length; i++) {
     bacteria[i].growth()
@@ -7,6 +7,7 @@ function drawBacteria(gl, program, bacteria) {
     var n = initBuffers(
       gl,
       program,
+      compression,
       circleOrgin,
       bacteria[i].size,
       bacteria[i].getR(),

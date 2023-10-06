@@ -1,142 +1,186 @@
-// initializing the game object
 class Game {
   constructor() {
-    const width = 800,
-      heigth = 800,
-      bacteriaCount = Math.floor(Math.random() * 5 + 5),
-      backgoundColour = [1, 1, 1, 1] // white
-
-    this.background = backgoundColour
+    this.background = [1, 1, 1, 1] // white
     this.score = 0
     this.bacteria = []
     this.antibiotics = []
-
-    //initialization
+    this.over = false // Initialize game state
+    this.reproductionInterval = 2000
+    // Initialize canvas and WebGL
     this.initializeCanvas()
+    this.compression = calculateCompressionFactor(
+      this.gameCanvas.width,
+      this.gameCanvas.height,
+    )
+
+    // Add a click event listener to the canvas
+    this.gameCanvas.addEventListener('click', this.onCanvasClick.bind(this))
+
+    window.addEventListener('resize', () => {
+      this.resizeCanvasToDisplaySize()
+      this.compression = calculateCompressionFactor(
+        this.gameCanvas.width,
+        this.gameCanvas.height,
+      )
+    })
+    // Initialize bacteria
+    const bacteriaCount = Math.floor(Math.random() * 5 + 5)
     this.initializeBacteria(bacteriaCount)
+    this.startReproductionTimer()
   }
 
   initializeCanvas() {
-    //create a canvas element so we dont have to refresh the entire DOM
+    // Create and configure the canvas
     this.gameCanvas = document.createElement('canvas')
-    this.gameCanvas.setAttribute('id', 'canvas')
-    this.gameCanvas.width = 800
-    this.gameCanvas.height = 800
-    //initializing webgl
-    this.gl = this.gameCanvas.getContext('webgl')
+    this.gameCanvas.id = 'canvas'
+    document.body.appendChild(this.gameCanvas)
+
+    // Initialize WebGL
+    this.gl =
+      this.gameCanvas.getContext('webgl') ||
+      this.gameCanvas.getContext('experimental-webgl')
     if (!this.gl) {
-      this.gl - this.gameCanvas.getContext('experimental-webgl')
-    } else if (!this.gl) {
       alert(
-        "Your browser doesn't support WebGl, please try again with an updated browser",
+        "Your browser doesn't support WebGL. Please use an updated browser.",
       )
     }
-    //throwing our canvas into our document
-    document.body.appendChild(this.gameCanvas)
-    //grabing our vertex and fragment shaders from the DOM and initializing them
+
+    // Set up shaders
     this.program = shaderSetUp(this.gl)
     this.gl.useProgram(this.program)
-  }
-  initializeBacteria(bacteriaCount) {
-    this.bacteria = Array(bacteriaCount) // max number of bacteria is 10
-    for (var i = 0; i < bacteriaCount; i++) {
-      this.bacteria[i] = new Bacteria()
-    }
+
+    // Resize canvas
+    this.resizeCanvasToDisplaySize()
   }
 
-  clearFrame() {
-    //Setting the colour of the background
-    this.gl.clearColor(
-      this.background[0],
-      this.background[1],
-      this.background[2],
-      this.background[3],
+  onCanvasClick(event) {
+    const mouseX = event.clientX - this.gameCanvas.getBoundingClientRect().left
+    const mouseY = event.clientY - this.gameCanvas.getBoundingClientRect().top
+
+    // Read pixel color asynchronously after rendering
+    requestAnimationFrame(() => {
+      const pixels = this.readPixelColor(mouseX, mouseY)
+      console.log('Clicked Pixel Color:', pixels)
+
+      // Handle pixel color data (e.g., update game state)
+      this.updateBacteria(pixels)
+    })
+  }
+
+  readPixelColor(x, y) {
+    const pixels = new Uint8Array(4)
+    this.gl.readPixels(
+      x,
+      this.gameCanvas.height - y,
+      1,
+      1,
+      this.gl.RGBA,
+      this.gl.UNSIGNED_BYTE,
+      pixels,
     )
-    //creating our viewport
-    this.gl.viewport(0, 0, this.gameCanvas.width, this.gameCanvas.height)
-    //clearing previous rendering
+    return pixels
+  }
+
+  initializeBacteria(bacteriaCount) {
+    this.bacteria = Array.from({length: bacteriaCount}, () => new Bacteria())
+  }
+
+  render() {
+    // Clear and render
+    this.gl.clearColor(...this.background)
     this.gl.clear(this.gl.COLOR_BUFFER_BIT)
-    //enabling the next rendering and defining how to blend it
+    this.gl.viewport(0, 0, this.gameCanvas.width, this.gameCanvas.height)
     this.gl.enable(this.gl.BLEND)
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
-    //clearing for the next frame in the loop
-    this.gl.flush()
+
+    // Draw game elements
+    drawBoundary(this.gl, this.program, this.compression)
+    drawBacteria(this.gl, this.program, this.compression, this.antibiotics)
+    drawBacteria(this.gl, this.program, this.compression, this.bacteria)
+
+    // Update game status
+    this.setGameStatus()
   }
 
   setGameStatus() {
-    let i = 0
-    while (i < this.bacteria.length) {
-      if (this.bacteria[i].size > 0.3) this.over = true
-      i++
-    }
+    this.over = this.bacteria.some((b) => b.size > 0.3)
   }
 
-  //the game state when running
   update() {
     if (!this.over) {
-      this.clearFrame()
-
-      // Draw the objects
-      drawDish(this.gl, this.program)
-      drawBacteria(this.gl, this.program, this.antibiotics)
-      drawBacteria(this.gl, this.program, this.bacteria)
-      // Determine if the game is over
-      this.setGameStatus()
+      this.render()
+    } else {
+      alert('GAME OVER')
+      document.getElementById('score2').innerHTML = 'YOU LOSE!'
     }
   }
-
   setBacteria() {
-    bacteria.push(new Bacteria())
+    this.bacteria.push(new Bacteria())
   }
+
   deleteBacteria(index) {
     if (index > -1) {
       this.bacteria.splice(index, 1)
     }
     this.score += 1
+    document.getElementById('score2').innerHTML = this.getScore()
   }
+
   isOver() {
     return this.over
   }
+
   getBacteria() {
     return this.bacteria
   }
+
   getAntibiotics() {
     return this.antibiotics
   }
+
   getScore() {
     return this.score
   }
 
   updateBacteria(pixels) {
-    //boolean meant to represent all bacteria having been inspected for color properties
-    var completeCheck = false
-    while (!completeCheck) {
-      for (var i = 0; i < this.bacteria.length; i++) {
-        let r = Math.round(this.bacteria[i].getR() * 255)
-        let g = Math.round(this.bacteria[i].getG() * 255)
-        let b = Math.round(this.bacteria[i].getB() * 255)
+    for (let i = 0; i < this.bacteria.length; i++) {
+      const r = Math.round(this.bacteria[i].getR() * 255)
 
-        if (areSameColor(pixels[0], pixels[1], pixels[2], r, g, b)) {
-          game.deleteBacteria(i)
-          document.getElementById('score2').innerHTML = writeScore()
-          break
-        }
-
-        if (i == this.bacteria.length - 1 || this.bacteria.length == 0) {
-          completeCheck = true
-        }
-      }
-      if (this.bacteria.length == 0) {
-        completeCheck = true
+      // Compare the R component of pixel color and bacteria color
+      if (pixels[0] === r) {
+        this.deleteBacteria(i)
+        break
       }
     }
   }
+
   updateAntibiotics(x, y) {
-    //after any bacteria groups that have been clicked on are deleted
-    //we delete produce an antibiotic
-    let b = new Antibiotics()
+    // Create an antibiotic and add it to the antibiotics array
+    const b = new Antibiotics()
     b.setOrginX(x)
     b.setOrginY(y)
     this.antibiotics.push(b)
+  }
+  startReproductionTimer() {
+    setInterval(() => {
+      // Add a new bacteria to the array
+      this.setBacteria()
+    }, this.reproductionInterval)
+  }
+  resizeCanvasToDisplaySize() {
+    const dpr = window.devicePixelRatio
+    const browserWidth = Math.round(this.gameCanvas.clientWidth * dpr)
+    const browserHeight = Math.round(this.gameCanvas.clientHeight * dpr)
+
+    if (
+      this.gameCanvas.width !== browserWidth ||
+      this.gameCanvas.height !== browserHeight
+    ) {
+      this.gameCanvas.width = browserWidth
+      this.gameCanvas.height = browserHeight
+    }
+  }
+  writeScore() {
+    return this.getScore()
   }
 }
