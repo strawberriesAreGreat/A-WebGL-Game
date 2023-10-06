@@ -55,9 +55,6 @@ class Game {
   }
 
   onCanvasClick(event) {
-    if (this.isStart == true) {
-      this.isStart = false
-    }
     if (this.isOver()) {
       // Reset the game when it's over
       this.resetGame()
@@ -131,7 +128,7 @@ class Game {
     }
     this.score += 1
     this.reproductionInterval =
-      this.reproductionInterval - this.reproductionInterval * 0.1
+      this.reproductionInterval - this.reproductionInterval * 0.9
     document.getElementById('score2').innerHTML = this.getScore()
   }
 
