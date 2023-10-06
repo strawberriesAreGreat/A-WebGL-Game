@@ -1,26 +1,26 @@
-# WEBGL Game using Vaniala JS, CSS, and WebGL
+# WEBGL Game using Vanilla JS, CSS, and WebGL
 
-![Game Screenshot](game.gif)
+A really simple implemenation of a 'clicker' type of game. The goal is the kill as many bacteria colonies as your can before one of them gets too big 🦠💉🧼
 
-This game is a really simple and crude implemenation of a 'cookie-clicker' type of game. The goal is the kill as many bacteria colonies as your can before one of them gets too big.
+This project was an exercise in building fully functional game using no external libraries or tools. Its vanilla JS, CSS, & WebGl from the score counter right down to the vertex shaders. 
+
+![Game Screenshot](src/game.gif)
 
 ## Technical Insights
 
 This game was devloped in order to gain technical insights and experience with WebGL:
 
-- **Shader Programming**: I utilized vertex and fragment shaders to produce basic polygons
+- [Shader Programming](https://github.com/strawberriesAreGreat/Basic-Webgl-Game/blob/main/js/initShaders.js): I utilized vertex and fragment shaders to render basic 2D polygons(just circles for this prohect)🟧🔺🔵
 
-- **Real-time Collision Detection**: I implemented a crude (and partially broken) collision detection algorithms to ensure realistic interactions between game objects.
+- [Real-time Collision Detection](https://github.com/strawberriesAreGreat/Basic-Webgl-Game/blob/main/js/collisionDetect.js): I implemented a crude (and partially broken) collision detection algorithms to ensure realistic interactions between game objects 💥💥💥
 
-- **WebGL Debugging**: Debugging was a challenge with WebGL when first attempting to get shaders working properly
+- **WebGL Debugging**: Debugging was a challenge with WebGL when first attempting to get shaders working properly ⛱️
 
-- **Handling Game Events**: Interactivity was achieved with user events
+- **Handling Game Events**: Interactivity was achieved with user events 👉🏻
 
 ## Play the Game
 
-To experience the Super Awesome WebGL Game, simply clone the repo and launch the home.html page in a browser. Its not the most fun game to play :/
-
-## Screenshots
+To experience the game for yourself, just clone the repo and launch the home.html page in any old browser
 
 ## TODO
 
