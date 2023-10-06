@@ -15,9 +15,9 @@ function main() {
     game.update()
 
     if (game.isOver()) {
-      alert('GAME OVER')
-      document.getElementById('score2').innerHTML = 'YOU LOSE!'
-      return
+      const scoreElement = document.getElementById('score2')
+      scoreElement.innerHTML = 'game\nover\n :('
+      scoreElement.style.fontSize = '4vw'
     }
 
     requestAnimationFrame(loop)

@@ -8,7 +8,7 @@ class Bacteria {
 
     this.generatePastelColor()
     this.size = 0.07 + Math.random() * 0.06 // Adjust size as needed
-    this.rate = 0.04 * Math.floor(Math.random() + 1)
+    this.rate = 0.058 * Math.floor(Math.random() + 1)
     this.v2 = this.defineStartingLocation()
   }
 

@@ -21,6 +21,20 @@
 
     body {overflow:hidden;}
     canvas{width: 100vw; height: 100vh; display: block;}
+    
+    #score2 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 10vw;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px 20px; /* Add padding to round the corners */
+      background-color: rgba(0, 0, 0, 0.7); /* Add a semi-transparent black background */
+      border-radius: 10px; /* Add border-radius to round the corners */
+      color: white;
+}
   </style>
 
   <script>
@@ -81,7 +95,6 @@
     </script>
   </head>
   <body>
-    <p id="score1"> Score </p>
     <p id="score2"> 0 </p>
   </body>
 </html>

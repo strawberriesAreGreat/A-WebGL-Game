@@ -4,8 +4,9 @@ class Game {
     this.score = 0
     this.bacteria = []
     this.antibiotics = []
+    this.isStart = true
     this.over = false // Initialize game state
-    this.reproductionInterval = 2000
+    this.reproductionInterval = 1000
     // Initialize canvas and WebGL
     this.initializeCanvas()
     this.compression = calculateCompressionFactor(
@@ -54,13 +55,20 @@ class Game {
   }
 
   onCanvasClick(event) {
+    if (this.isStart == true) {
+      this.isStart = false
+    }
+    if (this.isOver()) {
+      // Reset the game when it's over
+      this.resetGame()
+      return
+    }
     const mouseX = event.clientX - this.gameCanvas.getBoundingClientRect().left
     const mouseY = event.clientY - this.gameCanvas.getBoundingClientRect().top
 
     // Read pixel color asynchronously after rendering
     requestAnimationFrame(() => {
       const pixels = this.readPixelColor(mouseX, mouseY)
-      console.log('Clicked Pixel Color:', pixels)
 
       // Handle pixel color data (e.g., update game state)
       this.updateBacteria(pixels)
@@ -97,7 +105,7 @@ class Game {
     drawBoundary(this.gl, this.program, this.compression)
     drawBacteria(this.gl, this.program, this.compression, this.antibiotics)
     drawBacteria(this.gl, this.program, this.compression, this.bacteria)
-
+    drawDish(this.gl, this.program, this.compression)
     // Update game status
     this.setGameStatus()
   }
@@ -110,7 +118,6 @@ class Game {
     if (!this.over) {
       this.render()
     } else {
-      alert('GAME OVER')
       document.getElementById('score2').innerHTML = 'YOU LOSE!'
     }
   }
@@ -123,6 +130,8 @@ class Game {
       this.bacteria.splice(index, 1)
     }
     this.score += 1
+    this.reproductionInterval =
+      this.reproductionInterval - this.reproductionInterval * 0.1
     document.getElementById('score2').innerHTML = this.getScore()
   }
 
@@ -182,5 +191,22 @@ class Game {
   }
   writeScore() {
     return this.getScore()
+  }
+  resetGame() {
+    this.background = [1, 1, 1, 1] // white
+    this.score = 0
+    this.bacteria = []
+    this.antibiotics = []
+    this.over = false // Initialize game state
+    this.reproductionInterval = 1000
+
+    // Initialize bacteria
+    const bacteriaCount = Math.floor(Math.random() * 5 + 5)
+    this.initializeBacteria(bacteriaCount)
+    this.startReproductionTimer()
+    document.getElementById('score2').innerHTML = this.getScore()
+
+    // Clear the canvas
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT)
   }
 }

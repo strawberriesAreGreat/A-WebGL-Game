@@ -6,11 +6,9 @@ function isOverlapping(bacteria) {
       if (calculateDistance(bacteria[i], bacteria[j])) {
         //setting larger bacteria to take over the smaller one
         if (bacteria[i].getSize() > bacteria[j].getSize()) {
-          bacteria[j].setR(bacteria[i].getR())
           bacteria[j].setG(bacteria[i].getG())
           bacteria[j].setB(bacteria[i].getB())
         } else {
-          bacteria[i].setR(bacteria[j].getR())
           bacteria[i].setG(bacteria[j].getG())
           bacteria[i].setB(bacteria[j].getB())
         }
